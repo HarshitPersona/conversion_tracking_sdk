@@ -3,6 +3,7 @@ import { SDKConfig, TrackingData } from './types';
 import { PIXEL_VERSION, EVENT_TYPES } from '../constants';
 import Logger from '../utils/logger';
 import APIClient from '../api';
+import { getSessionId } from '../utils/session';
 
 class ConversionPixelSDK {
   private readonly isTestMode: boolean;
@@ -33,8 +34,11 @@ class ConversionPixelSDK {
         return;
       }
 
+      const sessionId = getSessionId();
+      
       const trackingData: TrackingData = {
         eventId: data.eventId,
+        sessionId: sessionId || undefined,
         test: data.test || this.isTestMode,
         timestamp: data.timestamp || Date.now(),
         url: data.url || window.location.href,

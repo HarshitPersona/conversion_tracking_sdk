@@ -184,7 +184,7 @@
                 return;
             }
             
-            console.log('Tracking conversion with eventId:', eventId);
+            console.log('Tracking conversion with eventId:', eventId, 'testMode:', testMode);
             
             if (typeof pier39 !== 'undefined') {
                 pier39('track', 'conversion', {
@@ -222,6 +222,34 @@
         
         // Show initial log message
         console.log('Pier39 Conversion Tracking SDK Test Page Loaded');
+        
+        // Display current sessionId if available
+        function displaySessionInfo() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionFromUrl = urlParams.get('sessionId');
+            const sessionFromCookie = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('pier39_session_id='))
+                ?.split('=')[1];
+                
+            console.log('SessionId from URL:', sessionFromUrl || 'None');
+            console.log('SessionId from Cookie:', sessionFromCookie || 'None');
+            
+            // Display in the UI
+            const sessionInfo = document.createElement('div');
+            sessionInfo.style.cssText = 'margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 4px;';
+            sessionInfo.innerHTML = `
+                <strong>Session Information:</strong><br>
+                URL Parameter: ${sessionFromUrl || 'Not found'}<br>
+                Cookie Value: ${sessionFromCookie || 'Not found'}
+            `;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(sessionInfo, container.firstChild);
+        }
+        
+        // Run on page load
+        setTimeout(displaySessionInfo, 100);
     </script>
 </body>
 </html> 

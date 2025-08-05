@@ -5,6 +5,7 @@ import { PixelInitConfig } from './types';
 import Logger from './utils/logger';
 import ConsoleLogHandler from './utils/logger/handlers/ConsoleLogHandler';
 import { SDKConfig } from './core/types';
+import { initializeSession } from './utils/session';
 
 let sdkInstance: ConversionPixelSDK | null = null;
 
@@ -42,6 +43,13 @@ function initializeSDK(config: PixelInitConfig = {}): ConversionPixelSDK | null 
 // Auto-initialize and handle pier39 queue when script loads
 (function() {
   if (typeof window === 'undefined') return;
+  
+  // Initialize session management first - this will set sessionId from URL params to cookie if available
+  const sessionId = initializeSession();
+  
+  if (sessionId) {
+    console.log('Session initialized with ID:', sessionId);
+  }
   
   // Initialize the SDK
   const sdk = initializeSDK({
@@ -83,6 +91,7 @@ if (typeof window !== 'undefined') {
 
 export * from './types';
 export { initializeSDK };
+export { getSessionId, setSessionId, initializeSession, clearSession } from './utils/session';
 
 // Default export for UMD compatibility
 export default {
