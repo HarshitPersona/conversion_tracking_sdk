@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pier39 Conversion Tracking SDK Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .log {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+        }
+        label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://cdn.personapay.ai/assets/files/js/pier39-conversion-tracking-sdk-script/beta/pixel.min.js"></script>
+</head>
+<body>
+    <h1>Pier39 Conversion Tracking SDK Test</h1>
+    
+    <div class="container">
+        <h2>Test Conversion Tracking</h2>
+        <p>Use the buttons below to test different conversion tracking scenarios:</p>
+        
+        <div>
+            <label for="eventId">Event ID:</label>
+            <input type="text" id="eventId" value="test-event-123" placeholder="Enter event ID">
+        </div>
+        
+        <div>
+            <label for="testMode">Test Mode:</label>
+            <input type="checkbox" id="testMode" checked> Enable test mode
+        </div>
+        
+        <button onclick="trackConversion()">Track Conversion</button>
+        <button onclick="trackTestConversion()">Track Test Conversion (with test: true)</button>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+    
+    <div class="container">
+        <h2>Implementation Code</h2>
+        <p>Add this code to your website's &lt;head&gt; section:</p>
+        
+        <div class="code">
+&lt;script&gt;
+  (function(w,d,s,u,n,a){
+    w['Pier39PixelObject'] = n;
+    w[n] = w[n] || function() {
+      (w[n].q = w[n].q || []).push(arguments);
+    };
+    a = d.createElement(s);
+    a.async = true;
+    a.src = u;
+    var m = d.getElementsByTagName(s)[0];
+    m.parentNode.insertBefore(a, m);
+  })(window, document, 'script', 'https://cdn.pier39.ai/pixel.js', 'pier39');
+&lt;/script&gt;
+        </div>
+        
+        <p>Track conversions with:</p>
+        <div class="code">
+&lt;script&gt;
+  pier39('track', 'conversion', {
+    eventId: 'YOUR_EVENT_UUID',
+    test: true // Remove this for production
+  });
+&lt;/script&gt;
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Console Log</h2>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        // Override console methods to display logs on page
+        const logElement = document.getElementById('log');
+        const originalLog = console.log;
+        const originalInfo = console.info;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        function addLogEntry(level, args) {
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            const entry = document.createElement('div');
+            entry.style.marginBottom = '5px';
+            entry.style.padding = '5px';
+            entry.style.borderLeft = '3px solid ' + getLogColor(level);
+            entry.innerHTML = `<strong>[${timestamp}] [${level.toUpperCase()}]</strong> ${message}`;
+            
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function getLogColor(level) {
+            switch (level) {
+                case 'info': return '#007cba';
+                case 'warn': return '#ff9800';
+                case 'error': return '#f44336';
+                default: return '#666';
+            }
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addLogEntry('log', args);
+        };
+        
+        console.info = function(...args) {
+            originalInfo.apply(console, args);
+            addLogEntry('info', args);
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addLogEntry('warn', args);
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addLogEntry('error', args);
+        };
+        
+        function trackConversion() {
+            const eventId = document.getElementById('eventId').value;
+            const testMode = document.getElementById('testMode').checked;
+            
+            if (!eventId) {
+                alert('Please enter an Event ID');
+                return;
+            }
+            
+            console.log('Tracking conversion with eventId:', eventId);
+            
+            if (typeof pier39 !== 'undefined') {
+                pier39('track', 'conversion', {
+                    eventId: eventId,
+                    test: testMode
+                });
+            } else {
+                console.error('pier39 function not available');
+            }
+        }
+        
+        function trackTestConversion() {
+            const eventId = document.getElementById('eventId').value;
+            
+            if (!eventId) {
+                alert('Please enter an Event ID');
+                return;
+            }
+            
+            console.log('Tracking test conversion with eventId:', eventId);
+            
+            if (typeof pier39 !== 'undefined') {
+                pier39('track', 'conversion', {
+                    eventId: eventId,
+                    test: true
+                });
+            } else {
+                console.error('pier39 function not available');
+            }
+        }
+        
+        function clearLog() {
+            logElement.innerHTML = '';
+        }
+        
+        // Show initial log message
+        console.log('Pier39 Conversion Tracking SDK Test Page Loaded');
+    </script>
+</body>
+</html> 
