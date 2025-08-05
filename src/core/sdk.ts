@@ -34,15 +34,13 @@ class ConversionPixelSDK {
         return;
       }
 
-      const sessionId = getSessionId();
+      const isTestMode = data.test || this.isTestMode;
+      const sessionId = isTestMode ? 'test' : getSessionId();
       
       const trackingData: TrackingData = {
         eventId: data.eventId,
         sessionId: sessionId || undefined,
-        test: data.test || this.isTestMode,
-        timestamp: data.timestamp || Date.now(),
-        url: data.url || window.location.href,
-        userAgent: data.userAgent || navigator.userAgent,
+        test: isTestMode,
         pixelVersion: PIXEL_VERSION,
       };
 
@@ -51,8 +49,7 @@ class ConversionPixelSDK {
           message: 'Test conversion tracked',
           extra: { trackingData }
         });
-        console.log('Test conversion tracked', trackingData);
-        return;
+        console.log('Test conversion tracked');
       }
 
       this.logger.info({

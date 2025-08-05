@@ -25,7 +25,7 @@
         a.src = u;
         var m = d.getElementsByTagName(s)[0];
         m.parentNode.insertBefore(a, m);
-      })(window, document, 'script', 'https://cdn.personapay.ai/assets/files/js/pier39-conversion-tracking-sdk-script/beta/pixel.min.js', 'pier39');
+      })(window, document, 'script', 'https://cdn.personapay.ai/pixel.min.js', 'pier39');
     </script>
     <style>
       body {
@@ -85,7 +85,7 @@
       function trackConversion() {
         console.log('trackConversion');
         pier39('track', 'conversion', {
-          eventId: '1234567890',
+          eventId: 'RANDOM_EVENT_ID',
         });
       }
      </script>

@@ -9,8 +9,5 @@ export interface TrackingData {
   eventId: string;
   sessionId?: string;
   test?: boolean;
-  timestamp: number;
-  url: string;
-  userAgent: string;
   pixelVersion: string;
 } 
