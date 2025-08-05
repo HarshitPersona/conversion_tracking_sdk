@@ -13,7 +13,7 @@ declare global {
   const w = window as any;
   const d = document;
   const pixelName = 'pier39';
-  const sdkUrl = 'https://cdn.pier39.ai/pixel.min.js';
+  const sdkUrl = 'https://cdn.personapay.ai/pixel.min.js';
   
   // Set the global pixel object name
   w.Pier39PixelObject = pixelName;
